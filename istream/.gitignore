@@ -120,6 +120,7 @@ fabric.properties
 
 dist/*
 target/
+target/**
 lib_managed/
 src_managed/
 project/boot/
@@ -127,6 +128,8 @@ project/plugins/project/
 .history
 .cache
 .lib/
+.metals/**
+.metals/
 
 ### SBT Patch ###
 .bsp/
@@ -521,6 +524,7 @@ FodyWeavers.xsd
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+.vscode/
 
 # Local History for Visual Studio Code
 .history/
@@ -537,5 +541,7 @@ FodyWeavers.xsd
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
+
+.bloop/
 
 # End of https://www.toptal.com/developers/gitignore/api/scala,sbt,visualstudio,intellij
