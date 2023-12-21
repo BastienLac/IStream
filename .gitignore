@@ -1,3 +1,5 @@
 .metals/
 .vscode/
 istream/project/target/
+istream/project/metals.sbt
+istream/project/project/metals.sbt
