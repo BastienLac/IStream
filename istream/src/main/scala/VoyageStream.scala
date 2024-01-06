@@ -3,7 +3,7 @@ import zio.stream.ZStream
 import com.github.tototoshi.csv._
 
 object VoyageStream extends ZIOAppDefault {
-
+  val voyages: List[Voyage] = List()
   override val run: ZIO[Any & ZIOAppArgs & Scope, Throwable, Unit] =
     for {
       url <- ZIO.succeed(getClass().getClassLoader().getResource("voyage.csv"))
@@ -24,8 +24,12 @@ object VoyageStream extends ZIOAppDefault {
               )
         )
         .collectSome[Voyage]
-        .grouped(5)
-        .foreach(Console.printLine(_))
+        .foreach{
+          elem => Console.printLine("Voyage numéro " + elem.voyage + ", depuis " + elem.depart + ", vers " + elem.arrivee)
+        }
       _ <- ZIO.succeed(source.close())
+      _ <- Console.print("Veuillez choisir le numéro de votre voyage: ")
+      name <- Console.readLine
     } yield ()
+
 }
