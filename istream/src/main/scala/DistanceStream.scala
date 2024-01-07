@@ -56,7 +56,15 @@ object HttpStream extends ZIOAppDefault {
             res <- z
             body <- res.body.asString
             resultOf = body.fromJson[DistanceResponse]
-            _ <- Console.printLine(s"body size is: ${body.length()}")
+            
+            // Traitement des erreurs de désérialisation
+            distancesTexts <- ZIO.fromEither(resultOf.fold(
+              error => Left(error),
+              success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
+            ))
+
+            // Afficher le texte de chaque instance de Distance
+            _ <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"Distance Text: $text"))
           } yield resultOf
         }
         .foreach(Console.printLine(_))
