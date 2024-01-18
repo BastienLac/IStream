@@ -8,10 +8,10 @@ import zio.json.ast.JsonCursor
 import javax.print.attribute.standard.Destination
 
 object HttpStream extends ZIOAppDefault {
-  def fetchData() = {
+  def fetchData(origin: String, destination: String) = {
     val url = URL
       .decode(
-        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Paris&destinations=Lyon&key=AIzaSyB9UK97M3nPsMismYLKUSArWMFa80Ry_cw"
+        s"https://maps.googleapis.com/maps/api/distancematrix/json?origins=$origin&destinations=$destination&key=AIzaSyB9UK97M3nPsMismYLKUSArWMFa80Ry_cw"
       )
       .toOption
       .get
@@ -19,27 +19,39 @@ object HttpStream extends ZIOAppDefault {
     for {
       client <- ZIO.service[Client]
       res <- client.url(url).get("")
-    } yield res
+      body <- res.body.asString
+      resultOf = body.fromJson[DistanceResponse]
+      distancesTexts <- ZIO.fromEither(resultOf.fold(
+        error => Left(error),
+        success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
+      ))
+
+      finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"Distance Text: $text"))
+    } yield finalDistance
+
+  }
+
+  def calculateDistance(origin: String, destination: String) = {
+
   }
 
   override def run: ZIO[Any, Any, Unit] =
     val appLogic = for {
-      _ <- ZStream(fetchData())
+      _ <- ZStream(fetchData("Paris", "Lyon"))
         .mapZIO { z =>
           for {
             res <- z
-            body <- res.body.asString
-            resultOf = body.fromJson[DistanceResponse]
+            // body <- res.body.asString
+            // resultOf = body.fromJson[DistanceResponse]
             
-            // Traitement des erreurs de désérialisation
-            distancesTexts <- ZIO.fromEither(resultOf.fold(
-              error => Left(error),
-              success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
-            ))
+            // // Traitement des erreurs de désérialisation
+            // distancesTexts <- ZIO.fromEither(resultOf.fold(
+            //   error => Left(error),
+            //   success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
+            // ))
 
             // Afficher le texte de chaque instance de Distance
-            _ <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"Distance Text: $text"))
-          } yield resultOf
+          } yield res
         }
         .foreach(Console.printLine(_))
     } yield ()
