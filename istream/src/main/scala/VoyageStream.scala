@@ -2,6 +2,7 @@ import zio._
 import zio.stream.ZStream
 import com.github.tototoshi.csv._
 import scala.collection.mutable.ListBuffer
+import HttpStream.calculateDistance
 
 object VoyageStream extends ZIOAppDefault {
   val voyages = new ListBuffer[Voyage]()

@@ -26,7 +26,7 @@ object HttpStream extends ZIOAppDefault {
         success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
       ))
 
-      finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"Distance Text: $text"))
+      finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"La distance entre $origin et $destination est de : $text"))
     } yield finalDistance
 
   }
