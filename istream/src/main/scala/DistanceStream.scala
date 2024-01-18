@@ -32,28 +32,14 @@ object HttpStream extends ZIOAppDefault {
   }
 
   def calculateDistance(origin: String, destination: String) = {
-
+    for {
+      _ <- fetchData(origin, destination)
+    } yield Console.printLine(_)
   }
 
   override def run: ZIO[Any, Any, Unit] =
     val appLogic = for {
-      _ <- ZStream(fetchData("Paris", "Lyon"))
-        .mapZIO { z =>
-          for {
-            res <- z
-            // body <- res.body.asString
-            // resultOf = body.fromJson[DistanceResponse]
-            
-            // // Traitement des erreurs de désérialisation
-            // distancesTexts <- ZIO.fromEither(resultOf.fold(
-            //   error => Left(error),
-            //   success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
-            // ))
-
-            // Afficher le texte de chaque instance de Distance
-          } yield res
-        }
-        .foreach(Console.printLine(_))
+      _ <- calculateDistance("Paris", "Lyon")
     } yield ()
 
     appLogic.provide(Client.default, Scope.default)
