@@ -1,22 +1,17 @@
 import zio._
+import zio.http._
 import zio.stream.ZStream
 import com.github.tototoshi.csv._
 import scala.collection.mutable.ListBuffer
-import HttpStream.calculateDistance
-import zio.http._
-import zio.stream._
-import zio.Duration._
-import zio.json._
-import scala.compiletime.ops.string
-import zio.json.ast.JsonCursor
-import javax.print.attribute.standard.Destination
+import DistanceStream.fetchData
 
 object VoyageStream extends ZIOAppDefault {
   val voyages = new ListBuffer[Voyage]()
 
+  // renvoie un voyage s'il existe sinon None
   def fetchVoyage(num: Int): ZIO[Any, Nothing, Option[Voyage]] =
     ZIO.succeed(voyages.find(_.voyage == num))
-    
+
   override val run: ZIO[Any, Any, Unit] =
     var appLogic = for {
       url <- ZIO.succeed(getClass().getClassLoader().getResource("voyage.csv"))
@@ -40,17 +35,21 @@ object VoyageStream extends ZIOAppDefault {
         .foreach{
           elem =>
             voyages += elem
+            // Affiche chaque voyage
             Console.printLine("Voyage numéro " + elem.voyage + ", depuis " + elem.depart + ", vers " + elem.arrivee)
         }
       _ <- ZIO.succeed(source.close())
 
       _ <- Console.print("Veuillez choisir le numéro de votre voyage: ")
+
+      // Vérifie que l'entrée utilisateur est valide. Si ce n'est pas un int renvoie une erreur de type RuntimeException
       num <- Console.readLine.flatMap(s => ZIO.fromOption(s.toIntOption).orElseFail(new RuntimeException("Entrée utilisateur doit être un numéro.")))
+      
       voyageOpt <- fetchVoyage(num)
       _ <- voyageOpt match {
         case Some(voyage) =>
           Console.printLine(s"Vous avez choisi le voyage ${voyage.depart} -> ${voyage.arrivee}") *>
-            calculateDistance(voyage.depart, voyage.arrivee)
+            fetchData(voyage.depart, voyage.arrivee)
         case None =>
           Console.printLine("Aucun voyage trouvé pour le numéro spécifié.")
       }
