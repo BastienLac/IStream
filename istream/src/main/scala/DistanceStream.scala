@@ -28,7 +28,6 @@ object HttpStream extends ZIOAppDefault {
 
       finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"La distance entre $origin et $destination est de : $text"))
     } yield finalDistance
-
   }
 
   def calculateDistance(origin: String, destination: String) = {
