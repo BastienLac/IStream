@@ -13,6 +13,10 @@ import javax.print.attribute.standard.Destination
 
 object VoyageStream extends ZIOAppDefault {
   val voyages = new ListBuffer[Voyage]()
+
+  def fetchVoyage(num: Int): ZIO[Any, Nothing, Option[Voyage]] =
+    ZIO.succeed(voyages.find(_.voyage == num))
+    
   override val run: ZIO[Any, Any, Unit] =
     var appLogic = for {
       url <- ZIO.succeed(getClass().getClassLoader().getResource("voyage.csv"))
@@ -39,12 +43,18 @@ object VoyageStream extends ZIOAppDefault {
             Console.printLine("Voyage numéro " + elem.voyage + ", depuis " + elem.depart + ", vers " + elem.arrivee)
         }
       _ <- ZIO.succeed(source.close())
+
       _ <- Console.print("Veuillez choisir le numéro de votre voyage: ")
-      num <- Console.readLine
-      voyage = voyages.toList.filter(x => (x.voyage == num.toInt)).head
-      _ <- Console.printLine("Vous avez choisi le voyage " + voyage.depart + " -> " + voyage.arrivee)
-      // AJOUTER API ICI
-      _ <- calculateDistance(voyage.depart, voyage.arrivee)
+      num <- Console.readLine.flatMap(s => ZIO.fromOption(s.toIntOption).orElseFail(new RuntimeException("Entrée utilisateur doit être un numéro.")))
+      voyageOpt <- fetchVoyage(num)
+      _ <- voyageOpt match {
+        case Some(voyage) =>
+          Console.printLine(s"Vous avez choisi le voyage ${voyage.depart} -> ${voyage.arrivee}") *>
+            calculateDistance(voyage.depart, voyage.arrivee)
+        case None =>
+          Console.printLine("Aucun voyage trouvé pour le numéro spécifié.")
+      }
+
     } yield ()
 
     appLogic.provide(Client.default, Scope.default)
