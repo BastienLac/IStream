@@ -1,5 +1,5 @@
 # Scala Project
-CHABAS Tom - LACOUR Bastien - VOURIOT Marie  
+CHABAS Tom - LACOUR Bastien - VOURIOT Marie  (LSI2-APP)  
 Github link : https://github.com/BastienLac/IStream
 
 To start this project : run the "VoyageStream" file.
@@ -53,3 +53,12 @@ in order to manipulate the data obtained.
 
 This API is called in ```VoyageStream``` using the ```fetchData``` function. This function takes a destination and a departure as parameters and retrieves information using the API.
 
+## Decisions taken
+For this project, we decided to use simple algorithms because we were not familiar with Scala and ZIO.
+We chose to divide the work between each member to be more efficient. Some parts were really defined :
+- Create all case class
+- Create the csv file and read data inside it
+- Search an API to use and transform the json into data
+- Link all parts  
+
+Obviously, even if we were working on different things, we helped each other through the entire project.
