@@ -3,7 +3,7 @@ import zio.http._
 import zio.json._
 
 object DistanceStream extends ZIOAppDefault {
-  // récupère les données de l'API en fonction de l'origin et de la destination
+  // Retrieve all data from the API using a departure city and a destination
   def fetchData(origin: String, destination: String) = {
     val url = URL
       .decode(
@@ -17,14 +17,14 @@ object DistanceStream extends ZIOAppDefault {
       res <- client.url(url).get("")
       body <- res.body.asString
 
-      // decoder les données de l'API en objet DistanceResponse
+      // transform data in DistanceResponse
       resultOf = body.fromJson[DistanceResponse]
       distancesTexts <- ZIO.fromEither(resultOf.fold(
         error => Left(error),
         success => Right(success.rows.flatMap(_.elements.map(_.distance.text)))
       ))
 
-      finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"La distance entre $origin et $destination est de : $text"))
+      finalDistance <- ZIO.foreach(distancesTexts)(text => Console.printLine(s"Distance between $origin and $destination is : $text"))
     } yield Console.printLine(finalDistance)
   }
 

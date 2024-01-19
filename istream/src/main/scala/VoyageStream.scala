@@ -8,7 +8,7 @@ import DistanceStream.fetchData
 object VoyageStream extends ZIOAppDefault {
   val voyages = new ListBuffer[Voyage]()
 
-  // renvoie un voyage s'il existe sinon None
+  // return a trip if it exists or None
   def fetchVoyage(num: Int): ZIO[Any, Nothing, Option[Voyage]] =
     ZIO.succeed(voyages.find(_.voyage == num))
 
@@ -35,23 +35,23 @@ object VoyageStream extends ZIOAppDefault {
         .foreach{
           elem =>
             voyages += elem
-            // Affiche chaque voyage
-            Console.printLine("Voyage numéro " + elem.voyage + ", depuis " + elem.depart + ", vers " + elem.arrivee)
+            // Display each trip
+            Console.printLine("Trip number " + elem.voyage + ", from " + elem.depart + ", to " + elem.arrivee)
         }
       _ <- ZIO.succeed(source.close())
 
-      _ <- Console.print("Veuillez choisir le numéro de votre voyage: ")
+      _ <- Console.print("Please select the trip's number you want: ")
 
-      // Vérifie que l'entrée utilisateur est valide. Si ce n'est pas un int renvoie une erreur de type RuntimeException
-      num <- Console.readLine.flatMap(s => ZIO.fromOption(s.toIntOption).orElseFail(new RuntimeException("Entrée utilisateur doit être un numéro.")))
+      // Check if the entry is valid. If it's not an int return a RuntimeException
+      num <- Console.readLine.flatMap(s => ZIO.fromOption(s.toIntOption).orElseFail(new RuntimeException("The entry must be a number.")))
       
       voyageOpt <- fetchVoyage(num)
       _ <- voyageOpt match {
         case Some(voyage) =>
-          Console.printLine(s"Vous avez choisi le voyage ${voyage.depart} -> ${voyage.arrivee}") *>
+          Console.printLine(s"You selected the trip ${voyage.depart} -> ${voyage.arrivee}") *>
             fetchData(voyage.depart, voyage.arrivee)
         case None =>
-          Console.printLine("Aucun voyage trouvé pour le numéro spécifié.")
+          Console.printLine("No trip correspond to the selected number.")
       }
 
     } yield ()

@@ -1,36 +1,33 @@
-# Projet Scala
+# Scala Project
 CHABAS Tom - LACOUR Bastien - VOURIOT Marie  
-Lien github : https://github.com/BastienLac/IStream
+Github link : https://github.com/BastienLac/IStream
 
-## Contexte
-Pour ce projet, nous sommes partis sur l'idée d'une application de voyage.
-Le but est de pouvoir consulter une liste de voyage disponibles, de pouvoir en choisir un et de pouvoir afficher des informations
-sur ce dernier tel que le temps ou la distance nécéssaire.
+## Context
+For this project, we started with the idea of a travel app.
+The goal is to be able to consult a list of available trips, to be able to choose one and to be able to display information
+such as time or distance necessary.
 
-Pour ce faire, nous sommes partis sur l'idée de combiner différentes méthodes de traitements de données comme l'utilisation
-d'une API ou la lecture d'un fichier CSV.
+To do this, we started with the idea of combining different methods of data processing such as using
+an API or reading a CSV file.
 
 ## Case class
-La case class au centre de notre projet est "Voyage". Elle n'est pas très grande mais comporte quelques attributs :
-- id : Un identifiant unique
-- depart : La ville de départ
-- arrivee : La ville d'arrivée
+The important case class in our project is "Voyage". It's not huge but it has some information :
+- id : A unique identifier
+- depart : The departure city
+- arrivee : The destination city
 
-Comme dit plus haut, d'autres attributs tels que la distance et le temps ne sont pas présent dans la classe car ils sont 
-récupérés à l'aide de l'API. Cependant, si notre projet était d'une plus grande envergure, les voyages seraient enregistrer
-en base de données et il serait intéressant d'ajouter ces champs directement dans la classe.  
-Une fois cette classe créée, nous sommes passés sur le reste :
 
-## Fichier CSV
-Pour créer une liste de voyages disponibles, nous utilisons un fichier CSV. Il comporte 3 colonnes correspondantes chacune
-à un champ de la case class Voyage. Dans notre cas de test, nous n'avons pas mis beaucoup de voyage mais cela serait tout à
-fait possible d'en ajouter plus.  
-Pour lire ce fichier "voyage.csv", nous utilisons ZIO ainsi que la fonction "CSVReader.open", puis nous utilisons un iterator
-afin de parcourir l'entièreté du fichier.
-Les voyages récupérés sont ensuite mis dans une liste et affichés avec "Console.printLine"
+As said above, other attributes such as distance and time are not present in the class as they are
+recovered using the API. However, if our project were larger, trips would be recorded
+in database and it would be interesting to add these fields directly in the class.  
+Once this class was created, we moved on to the rest :
+
+## CSV File
+To create a list of available trips, we use a CSV file. It has 3 columns, each corresponding to a field of the case class Voyage.
+In our test case, we did not put much travel, but it would be possible to add more.To read this file "voyage.csv", we use ZIO as well as the function "CSVReader.open", then we use an iterator
+to browse the entire file. The recovered trips are then put in a list and displayed with "Console.printLine"
 
 ## API
-L'API que nous utilisons est Google Distance Matrix. Elle permet de récuperer la distance et le temps entre deux points géographiques.
-Nous pouvons appeler l'url correspondante à l'aide d'une clé, puis nous utilisons la fonction "fromJson" sur le résultat obtenu
-afin de pouvoir manipuler par la suite les données obtenues.
-
+The API we use is Google Distance Matrix. It allows you to recover the distance and time between two geographical points.
+We can call the corresponding url using a key, then we use the function "fromJson" on the result obtained
+in order to manipulate the data obtained.
