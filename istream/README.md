@@ -2,6 +2,8 @@
 CHABAS Tom - LACOUR Bastien - VOURIOT Marie  
 Github link : https://github.com/BastienLac/IStream
 
+To start this project : run the "VoyageStream" file.
+(Sometimes it doesn't work from the sbt shell cause the csv file is not found, so try running it with the green arrow)
 ## Context
 For this project, we started with the idea of a travel app.
 The goal is to be able to consult a list of available trips, to be able to choose one and to be able to display information
